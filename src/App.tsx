@@ -6,19 +6,18 @@ import {
   Menu, 
   X, 
   ArrowRight, 
-  Star, 
   Heart, 
   Instagram, 
   Twitter, 
   Facebook,
-  ChevronRight,
-  ChevronLeft
 } from 'lucide-react';
+import { useLanguage } from './LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // --- Types ---
 interface Product {
   id: number;
-  name: string;
+  nameKey: string;
   price: number;
   category: string;
   image: string;
@@ -30,7 +29,7 @@ interface Product {
 const PRODUCTS: Product[] = [
   {
     id: 1,
-    name: "Hand-Thrown Ceramic Vase",
+    nameKey: "product1",
     price: 85,
     category: "Decor",
     image: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=800",
@@ -39,7 +38,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 2,
-    name: "Organic Linen Throw",
+    nameKey: "product2",
     price: 120,
     category: "Textiles",
     image: "https://images.unsplash.com/photo-1580305751101-6df6ec73f1f2?auto=format&fit=crop&q=80&w=800",
@@ -47,7 +46,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 3,
-    name: "Brass Taper Holders",
+    nameKey: "product3",
     price: 45,
     category: "Lighting",
     image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&q=80&w=800",
@@ -56,7 +55,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 4,
-    name: "Woven Rattan Basket",
+    nameKey: "product4",
     price: 65,
     category: "Storage",
     image: "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&q=80&w=800",
@@ -64,7 +63,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 5,
-    name: "Sculptural Oak Stool",
+    nameKey: "product5",
     price: 240,
     category: "Furniture",
     image: "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&q=80&w=800",
@@ -72,7 +71,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 6,
-    name: "Matte Black Tea Set",
+    nameKey: "product6",
     price: 95,
     category: "Kitchen",
     image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=800",
@@ -80,11 +79,21 @@ const PRODUCTS: Product[] = [
   }
 ];
 
-const CATEGORIES = ["All", "Decor", "Textiles", "Lighting", "Storage", "Furniture", "Kitchen"];
+const CATEGORY_KEYS = ["all", "decor", "textiles", "lighting", "storage", "furniture", "kitchen"];
+const CATEGORY_MAP: Record<string, string> = {
+  all: "All",
+  decor: "Decor",
+  textiles: "Textiles",
+  lighting: "Lighting",
+  storage: "Storage",
+  furniture: "Furniture",
+  kitchen: "Kitchen",
+};
 
 // --- Components ---
 
 const Navbar = () => {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -102,9 +111,9 @@ const Navbar = () => {
             <Menu className="w-6 h-6" />
           </button>
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium uppercase tracking-widest">
-            <a href="#" className="hover:text-olive transition-colors">Shop</a>
-            <a href="#" className="hover:text-olive transition-colors">Collections</a>
-            <a href="#" className="hover:text-olive transition-colors">About</a>
+            <a href="#" className="hover:text-olive transition-colors">{t('shop')}</a>
+            <a href="#" className="hover:text-olive transition-colors">{t('collections')}</a>
+            <a href="#" className="hover:text-olive transition-colors">{t('about')}</a>
           </div>
         </div>
 
@@ -112,7 +121,8 @@ const Navbar = () => {
           STITCHED <span className="italic font-light">home</span>
         </a>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
           <button className="hidden sm:block">
             <Search className="w-5 h-5" />
           </button>
@@ -139,11 +149,11 @@ const Navbar = () => {
               </button>
             </div>
             <div className="flex flex-col gap-8 mt-12 text-4xl serif italic">
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>Shop All</a>
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>New Arrivals</a>
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>Furniture</a>
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>Decor</a>
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>About Us</a>
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>{t('shopAll')}</a>
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>{t('newArrivals')}</a>
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>{t('furniture')}</a>
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>{t('decor')}</a>
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)}>{t('aboutUs')}</a>
             </div>
           </motion.div>
         )}
@@ -153,6 +163,7 @@ const Navbar = () => {
 };
 
 const Hero = () => {
+  const { t } = useLanguage();
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -172,7 +183,7 @@ const Hero = () => {
           transition={{ delay: 0.2 }}
           className="uppercase tracking-[0.3em] text-xs mb-6 font-medium"
         >
-          Curated Living for the Modern Soul
+          {t('heroSubtitle')}
         </motion.p>
         <motion.h1 
           initial={{ opacity: 0, y: 30 }}
@@ -180,7 +191,7 @@ const Hero = () => {
           transition={{ delay: 0.4 }}
           className="text-6xl md:text-8xl serif font-light leading-tight mb-8"
         >
-          The Art of <br /> <span className="italic">Slow Living</span>
+          {t('heroTitle')} <br /> <span className="italic">{t('heroTitleItalic')}</span>
         </motion.h1>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -188,14 +199,14 @@ const Hero = () => {
           transition={{ delay: 0.6 }}
         >
           <button className="bg-white text-neutral-900 px-10 py-4 rounded-full text-sm font-medium uppercase tracking-widest hover:bg-olive hover:text-white transition-all duration-500 group">
-            Explore Collection
+            {t('exploreCollection')}
             <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </motion.div>
       </div>
 
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-white/60">
-        <span className="text-[10px] uppercase tracking-widest">Scroll</span>
+        <span className="text-[10px] uppercase tracking-widest">{t('scroll')}</span>
         <div className="w-[1px] h-12 bg-white/20 relative overflow-hidden">
           <motion.div 
             animate={{ y: [0, 48] }}
@@ -209,6 +220,7 @@ const Hero = () => {
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const { t } = useLanguage();
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -219,13 +231,13 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl mb-4 bg-neutral-100">
         <img 
           src={product.image} 
-          alt={product.name} 
+          alt={t(product.nameKey)} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
         {product.isNew && (
           <span className="absolute top-4 left-4 bg-white text-neutral-900 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">
-            New
+            {t('new')}
           </span>
         )}
         <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
@@ -233,14 +245,14 @@ const ProductCard = ({ product }: { product: Product }) => {
         </button>
         <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
           <button className="w-full bg-neutral-900 text-white py-3 rounded-xl text-xs font-medium uppercase tracking-widest hover:bg-olive transition-colors">
-            Quick Add
+            {t('quickAdd')}
           </button>
         </div>
       </div>
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1">{product.category}</p>
-          <h3 className="text-sm font-medium group-hover:text-olive transition-colors">{product.name}</h3>
+          <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1">{t(product.category.toLowerCase())}</p>
+          <h3 className="text-sm font-medium group-hover:text-olive transition-colors">{t(product.nameKey)}</h3>
         </div>
         <p className="text-sm font-semibold">${product.price}</p>
       </div>
@@ -249,27 +261,29 @@ const ProductCard = ({ product }: { product: Product }) => {
 };
 
 const CategorySection = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const { t } = useLanguage();
+  const [activeCategoryKey, setActiveCategoryKey] = useState("all");
 
-  const filteredProducts = activeCategory === "All" 
+  const activeCategoryValue = CATEGORY_MAP[activeCategoryKey];
+  const filteredProducts = activeCategoryValue === "All" 
     ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === activeCategory);
+    : PRODUCTS.filter(p => p.category === activeCategoryValue);
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-24">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
         <div>
-          <h2 className="text-4xl serif italic mb-4">Shop by Category</h2>
-          <p className="text-neutral-500 max-w-md">Discover our curated selection of objects designed to bring beauty and intention to your daily rituals.</p>
+          <h2 className="text-4xl serif italic mb-4">{t('shopByCategory')}</h2>
+          <p className="text-neutral-500 max-w-md">{t('categoryDescription')}</p>
         </div>
         <div className="flex flex-wrap gap-4">
-          {CATEGORIES.map(cat => (
+          {CATEGORY_KEYS.map(catKey => (
             <button 
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-xs font-medium uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-olive text-white' : 'bg-white text-neutral-500 hover:bg-neutral-100'}`}
+              key={catKey}
+              onClick={() => setActiveCategoryKey(catKey)}
+              className={`px-6 py-2 rounded-full text-xs font-medium uppercase tracking-widest transition-all ${activeCategoryKey === catKey ? 'bg-olive text-white' : 'bg-white text-neutral-500 hover:bg-neutral-100'}`}
             >
-              {cat}
+              {t(catKey)}
             </button>
           ))}
         </div>
@@ -287,6 +301,7 @@ const CategorySection = () => {
 };
 
 const FeaturedSection = () => {
+  const { t } = useLanguage();
   return (
     <section className="bg-olive text-white py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -295,13 +310,13 @@ const FeaturedSection = () => {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <p className="uppercase tracking-[0.3em] text-[10px] mb-6 opacity-60">The Artisan Series</p>
-          <h2 className="text-5xl md:text-6xl serif italic mb-8 leading-tight">Handcrafted with <br /> Soul & Purpose</h2>
+          <p className="uppercase tracking-[0.3em] text-[10px] mb-6 opacity-60">{t('artisanSeries')}</p>
+          <h2 className="text-5xl md:text-6xl serif italic mb-8 leading-tight">{t('handcraftedTitle')} <br /> {t('handcraftedTitleItalic')}</h2>
           <p className="text-white/70 mb-10 text-lg leading-relaxed">
-            Every piece in our collection is sourced from independent artisans who prioritize traditional techniques and sustainable materials. We believe that the objects we surround ourselves with should tell a story.
+            {t('artisanDescription')}
           </p>
           <button className="border border-white/30 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest hover:bg-white hover:text-olive transition-all duration-500">
-            Meet the Makers
+            {t('meetMakers')}
           </button>
         </motion.div>
         
@@ -320,8 +335,8 @@ const FeaturedSection = () => {
             />
           </motion.div>
           <div className="absolute -bottom-8 -left-8 bg-paper text-neutral-900 p-8 rounded-2xl shadow-2xl max-w-[240px]">
-            <p className="serif italic text-xl mb-2">"Quality is not an act, it is a habit."</p>
-            <p className="uppercase tracking-widest text-[10px] font-bold opacity-40">— Aristotle</p>
+            <p className="serif italic text-xl mb-2">{t('aristotleQuote')}</p>
+            <p className="uppercase tracking-widest text-[10px] font-bold opacity-40">{t('aristotleName')}</p>
           </div>
         </div>
       </div>
@@ -330,6 +345,7 @@ const FeaturedSection = () => {
 };
 
 const Footer = () => {
+  const { t } = useLanguage();
   return (
     <footer className="bg-neutral-900 text-white pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-6">
@@ -339,7 +355,7 @@ const Footer = () => {
               STITCHED <span className="italic font-light">home</span>
             </a>
             <p className="text-white/50 text-sm leading-relaxed mb-8">
-              Creating spaces that inspire peace, presence, and purpose. Our curated collection brings the beauty of the natural world into your home.
+              {t('footerDescription')}
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Instagram className="w-4 h-4" /></a>
@@ -349,34 +365,34 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">Shop</h4>
+            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">{t('shopFooter')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-white/50">
-              <li><a href="#" className="hover:text-white transition-colors">New Arrivals</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Best Sellers</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Furniture</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Decor & Objects</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Textiles</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('newArrivals')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('bestSellers')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('furniture')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('decorObjects')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('textiles')}</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">Support</h4>
+            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">{t('support')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-white/50">
-              <li><a href="#" className="hover:text-white transition-colors">Shipping & Returns</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Care Guide</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('shippingReturns')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('careGuide')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('contactUs')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('faq')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('privacyPolicy')}</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">Newsletter</h4>
-            <p className="text-sm text-white/50 mb-6">Join our community for early access to new collections and interior inspiration.</p>
+            <h4 className="uppercase tracking-widest text-xs font-bold mb-8">{t('newsletter')}</h4>
+            <p className="text-sm text-white/50 mb-6">{t('footerNewsletter')}</p>
             <div className="relative">
               <input 
                 type="email" 
-                placeholder="Email address" 
+                placeholder={t('emailAddress')} 
                 className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm focus:outline-none focus:border-white/30 transition-colors"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-neutral-900 p-2 rounded-full hover:bg-olive hover:text-white transition-all">
@@ -387,11 +403,11 @@ const Footer = () => {
         </div>
         
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] uppercase tracking-[0.2em] text-white/30">
-          <p>© 2026 STITCHED HOME. ALL RIGHTS RESERVED.</p>
+          <p>{t('copyright')}</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Cookies</a>
+            <a href="#" className="hover:text-white transition-colors">{t('terms')}</a>
+            <a href="#" className="hover:text-white transition-colors">{t('privacy')}</a>
+            <a href="#" className="hover:text-white transition-colors">{t('cookies')}</a>
           </div>
         </div>
       </div>
@@ -402,6 +418,7 @@ const Footer = () => {
 // --- Main App ---
 
 export default function App() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen selection:bg-olive selection:text-white">
       <Navbar />
@@ -413,16 +430,16 @@ export default function App() {
         {/* Newsletter Banner */}
         <section className="py-24 px-6">
           <div className="max-w-5xl mx-auto bg-neutral-100 rounded-[3rem] p-12 md:p-24 text-center">
-            <h2 className="text-4xl md:text-5xl serif italic mb-6">Join the Collective</h2>
-            <p className="text-neutral-500 mb-10 max-w-lg mx-auto">Sign up for our newsletter and receive 10% off your first order, plus exclusive access to new arrivals.</p>
+            <h2 className="text-4xl md:text-5xl serif italic mb-6">{t('joinCollective')}</h2>
+            <p className="text-neutral-500 mb-10 max-w-lg mx-auto">{t('newsletterDescription')}</p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input 
                 type="email" 
-                placeholder="Your email" 
+                placeholder={t('yourEmail')} 
                 className="flex-1 bg-white rounded-full px-8 py-4 text-sm focus:outline-none shadow-sm"
               />
               <button className="bg-neutral-900 text-white px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-olive transition-colors">
-                Subscribe
+                {t('subscribe')}
               </button>
             </div>
           </div>
@@ -432,7 +449,7 @@ export default function App() {
         <section className="pb-24 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <p className="uppercase tracking-widest text-[10px] font-bold text-neutral-400 mb-2">Follow Us</p>
+              <p className="uppercase tracking-widest text-[10px] font-bold text-neutral-400 mb-2">{t('followUs')}</p>
               <h2 className="text-3xl serif italic">@stitchedhome</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">

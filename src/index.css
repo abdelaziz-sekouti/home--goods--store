@@ -12,6 +12,14 @@ body {
   @apply bg-paper text-neutral-900 font-sans antialiased;
 }
 
+[dir="rtl"] .tracking-widest {
+  letter-spacing: 0.05em;
+}
+
+[dir="rtl"] .tracking-\[0\.3em\] {
+  letter-spacing: 0.15em;
+}
+
 .serif {
   @apply font-serif;
 }
