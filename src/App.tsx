@@ -24,6 +24,7 @@ import { useLanguage } from './LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import WelcomePreloader from './components/WelcomePreloader';
 
 type Page = 'home' | 'blog' | 'contact';
 
@@ -152,7 +153,7 @@ const Navbar = ({ cartCount, cartItems, onRemoveFromCart, onClearCart, onNavigat
         </div>
 
         <button onClick={() => onNavigate('home')} className="text-2xl serif font-semibold tracking-tight absolute left-1/2 -translate-x-1/2">
-          STITCHED <span className="italic font-light">home</span>
+          Home <span className="italic font-light">Str</span>
         </button>
 
         <div className="flex items-center gap-4">
@@ -499,10 +500,10 @@ const ProductCard = ({ product, onQuickAdd }: { product: Product; onQuickAdd: (p
             {t('new')}
           </span>
         )}
-        <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white" aria-label="Add to wishlist">
+        <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-white" aria-label="Add to wishlist">
           <Heart className="w-4 h-4" />
         </button>
-        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
           <button 
             onClick={(e) => { e.stopPropagation(); onQuickAdd(product); }}
             className="w-full bg-neutral-900 text-white py-3 rounded-xl text-xs font-medium uppercase tracking-widest hover:bg-olive transition-colors"
@@ -638,7 +639,7 @@ const WhatsAppWidget = () => {
                 <MessageCircle className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-semibold text-sm">STITCHED Home</p>
+                <p className="font-semibold text-sm">Home Str</p>
                 <p className="text-xs opacity-80">Typically replies instantly</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="ml-auto p-1 hover:bg-white/20 rounded-full transition-colors" aria-label="Close chat">
@@ -647,7 +648,7 @@ const WhatsAppWidget = () => {
             </div>
             <div className="p-4">
               <div className="bg-[#e9f7e8] rounded-xl p-3 mb-3 text-sm text-neutral-700">
-                <p>Hi there! Welcome to STITCHED Home. How can we help you today?</p>
+                <p>Hi there! Welcome to Home Str. How can we help you today?</p>
               </div>
               <div className="flex gap-2">
                 <input
@@ -878,7 +879,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
           <div className="lg:col-span-1">
             <a href="/" className="text-2xl serif font-semibold tracking-tight mb-6 block">
-              STITCHED <span className="italic font-light">home</span>
+              Home <span className="italic font-light">Str</span>
             </a>
             <p className="text-white/50 text-sm leading-relaxed mb-8">
               {t('footerDescription')}
@@ -948,6 +949,7 @@ export default function App() {
   const { t } = useLanguage();
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   const navigateTo = (page: Page) => {
     setCurrentPage(page);
@@ -973,6 +975,8 @@ export default function App() {
   };
 
   return (
+    <>
+      {!preloaderDone && <WelcomePreloader onComplete={() => setPreloaderDone(true)} />}
     <div className="min-h-screen selection:bg-olive selection:text-white">
       <Navbar cartCount={cartItems.length} cartItems={cartItems} onRemoveFromCart={removeFromCart} onClearCart={clearCart} onNavigate={navigateTo} currentPage={currentPage} />
       <SocialSidebar />
@@ -1009,7 +1013,7 @@ export default function App() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <p className="uppercase tracking-widest text-[10px] font-bold text-neutral-500 mb-2">{t('followUs')}</p>
-              <h2 className="text-3xl serif italic">@stitchedhome</h2>
+              <h2 className="text-3xl serif italic">@homestr</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {[1, 2, 3, 4, 5, 6].map(i => (
@@ -1035,5 +1039,6 @@ export default function App() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
