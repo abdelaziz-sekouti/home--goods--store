@@ -24,9 +24,11 @@ import { useLanguage } from './LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import AboutUs from './pages/AboutUs';
+import FurniturePage from './pages/Furniture';
 import WelcomePreloader from './components/WelcomePreloader';
 
-type Page = 'home' | 'blog' | 'contact';
+type Page = 'home' | 'blog' | 'contact' | 'about' | 'furniture';
 
 // --- Types ---
 interface Product {
@@ -145,10 +147,10 @@ const Navbar = ({ cartCount, cartItems, onRemoveFromCart, onClearCart, onNavigat
             <Menu className="w-6 h-6" />
           </button>
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium uppercase tracking-widest">
-            <button onClick={() => onNavigate('home')} className={`hover:text-olive transition-colors ${currentPage === 'home' ? 'text-olive' : ''}`}>{t('shop')}</button>
-            <button onClick={() => onNavigate('home')} className="hover:text-olive transition-colors">{t('collections')}</button>
+            <button onClick={() => { onNavigate('home'); setTimeout(() => scrollToSection('shop'), 100); }} className={`hover:text-olive transition-colors ${currentPage === 'home' ? 'text-olive' : ''}`}>{t('shop')}</button>
+            <button onClick={() => { onNavigate('home'); setTimeout(() => scrollToSection('collections'), 100); }} className="hover:text-olive transition-colors">{t('collections')}</button>
             <button onClick={() => onNavigate('blog')} className={`hover:text-olive transition-colors ${currentPage === 'blog' ? 'text-olive' : ''}`}>{t('blog')}</button>
-            <button onClick={() => onNavigate('contact')} className={`hover:text-olive transition-colors ${currentPage === 'contact' ? 'text-olive' : ''}`}>{t('about')}</button>
+            <button onClick={() => onNavigate('about')} className={`hover:text-olive transition-colors ${currentPage === 'about' ? 'text-olive' : ''}`}>{t('about')}</button>
           </div>
         </div>
 
@@ -345,11 +347,11 @@ const Navbar = ({ cartCount, cartItems, onRemoveFromCart, onClearCart, onNavigat
               </button>
             </div>
             <div className="flex flex-col items-center gap-6 sm:gap-8 text-3xl sm:text-4xl serif italic text-white/90 overflow-hidden text-center">
-              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('home'); }} className="hover:text-white transition-colors block">{t('shopAll')}</button>
-              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('home'); }} className="hover:text-white transition-colors block">{t('newArrivals')}</button>
-              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('home'); }} className="hover:text-white transition-colors block">{t('furniture')}</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('home'); setTimeout(() => scrollToSection('shop'), 100); }} className="hover:text-white transition-colors block">{t('shopAll')}</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('home'); setTimeout(() => scrollToSection('shop'), 100); }} className="hover:text-white transition-colors block">{t('newArrivals')}</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('furniture'); }} className="hover:text-white transition-colors block">{t('furniture')}</button>
               <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('blog'); }} className="hover:text-white transition-colors block">{t('blog')}</button>
-              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('contact'); }} className="hover:text-white transition-colors block">{t('aboutUs')}</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('about'); }} className="hover:text-white transition-colors block">{t('aboutUs')}</button>
             </div>
           </motion.div>
         )}
@@ -418,7 +420,7 @@ const Navbar = ({ cartCount, cartItems, onRemoveFromCart, onClearCart, onNavigat
 const Hero = () => {
   const { t } = useLanguage();
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=2000" 
@@ -454,7 +456,7 @@ const Hero = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.6 }}
         >
-          <button className="bg-white text-neutral-900 px-10 py-4 rounded-full text-sm font-medium uppercase tracking-widest hover:bg-olive hover:text-white transition-all duration-500 group">
+          <button onClick={() => scrollToSection('shop')} className="bg-white text-neutral-900 px-10 py-4 rounded-full text-sm font-medium uppercase tracking-widest hover:bg-olive hover:text-white transition-all duration-500 group">
             {t('exploreCollection')}
             <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
@@ -533,7 +535,7 @@ const CategorySection = ({ onQuickAdd }: { onQuickAdd: (product: Product) => voi
     : PRODUCTS.filter(p => p.category === activeCategoryValue);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-24">
+    <section id="shop" className="max-w-7xl mx-auto px-6 py-24">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
         <div>
           <h2 className="text-4xl serif italic mb-4">{t('shopByCategory')}</h2>
@@ -563,10 +565,10 @@ const CategorySection = ({ onQuickAdd }: { onQuickAdd: (product: Product) => voi
   );
 };
 
-const FeaturedSection = () => {
+const FeaturedSection = ({ onNavigate }: { onNavigate: (page: Page) => void }) => {
   const { t } = useLanguage();
   return (
-    <section className="bg-olive text-white py-24 overflow-hidden">
+    <section id="collections" className="bg-olive text-white py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -578,7 +580,7 @@ const FeaturedSection = () => {
           <p className="text-white/70 mb-10 text-lg leading-relaxed">
             {t('artisanDescription')}
           </p>
-          <button className="border border-white/30 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest hover:bg-white hover:text-olive transition-all duration-500">
+          <button onClick={() => onNavigate('about')} className="border border-white/30 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest hover:bg-white hover:text-olive transition-all duration-500">
             {t('meetMakers')}
           </button>
         </motion.div>
@@ -871,7 +873,7 @@ const MapSection = () => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ onNavigate }: { onNavigate: (page: Page) => void }) => {
   const { t } = useLanguage();
   return (
     <footer className="bg-neutral-900 text-white pt-24 pb-12">
@@ -895,22 +897,22 @@ const Footer = () => {
           <div>
             <h4 className="uppercase tracking-widest text-xs font-bold mb-8">{t('shopFooter')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-white/50">
-              <li><a href="#" className="hover:text-white transition-colors">{t('newArrivals')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('bestSellers')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('furniture')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('decorObjects')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('textiles')}</a></li>
+              <li><button onClick={() => onNavigate('home')} className="hover:text-white transition-colors">{t('newArrivals')}</button></li>
+              <li><button onClick={() => onNavigate('home')} className="hover:text-white transition-colors">{t('bestSellers')}</button></li>
+              <li><button onClick={() => onNavigate('furniture')} className="hover:text-white transition-colors">{t('furniture')}</button></li>
+              <li><button onClick={() => onNavigate('home')} className="hover:text-white transition-colors">{t('decorObjects')}</button></li>
+              <li><button onClick={() => onNavigate('home')} className="hover:text-white transition-colors">{t('textiles')}</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="uppercase tracking-widest text-xs font-bold mb-8">{t('support')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-white/50">
-              <li><a href="#" className="hover:text-white transition-colors">{t('shippingReturns')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('careGuide')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('contactUs')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('faq')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('privacyPolicy')}</a></li>
+              <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition-colors">{t('shippingReturns')}</button></li>
+              <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition-colors">{t('careGuide')}</button></li>
+              <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition-colors">{t('contactUs')}</button></li>
+              <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition-colors">{t('faq')}</button></li>
+              <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition-colors">{t('privacyPolicy')}</button></li>
             </ul>
           </div>
 
@@ -944,6 +946,15 @@ const Footer = () => {
 };
 
 // --- Main App ---
+
+const scrollToSection = (sectionId: string) => {
+  const el = document.getElementById(sectionId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
 
 export default function App() {
   const { t } = useLanguage();
@@ -983,9 +994,15 @@ export default function App() {
       <ScrollToTop />
       <WhatsAppWidget />
       <main>
+        {currentPage === 'blog' && <Blog />}
+        {currentPage === 'contact' && <Contact />}
+        {currentPage === 'about' && <AboutUs />}
+        {currentPage === 'furniture' && <FurniturePage onQuickAdd={addToCart} />}
+        {currentPage === 'home' && (
+          <>
         <Hero />
         <CategorySection onQuickAdd={addToCart} />
-        <FeaturedSection />
+        <FeaturedSection onNavigate={navigateTo} />
         <ParallaxSection />
         
         {/* Newsletter Banner */}
@@ -1036,8 +1053,10 @@ export default function App() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </main>
-      <Footer />
+      <Footer onNavigate={navigateTo} />
     </div>
     </>
   );
